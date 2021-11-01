@@ -11,6 +11,19 @@ public class FPSInput : MonoBehaviour
 
     private CharacterController _character;
 
+    [HideInInspector]
+    public readonly float baseSpeed = 6.0f;
+
+    private void Awake()
+    {
+        Messenger<float>.AddListener(GameEvent.SPEED_CHANGED, OnSpeedChanged);
+    }
+
+    private void OnDestroy()
+    {
+        Messenger<float>.RemoveListener(GameEvent.SPEED_CHANGED, OnSpeedChanged);
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -32,4 +45,12 @@ public class FPSInput : MonoBehaviour
 
         _character.Move(movement);
     }
+
+    private void OnSpeedChanged(float value)
+    {
+        speed = baseSpeed * value;
+
+        Debug.Log(value);
+    }
+
 }

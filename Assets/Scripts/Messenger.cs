@@ -58,7 +58,57 @@ public class Messenger
     }
 }
 
-public class Messenger<T> : Messenger
+public class Messenger<T>
 {
+    protected static Dictionary<string, List<Action<T>>> eventsDic = new Dictionary<string, List<Action<T>>>();
 
+    public static void AddListener(string gameEvent, Action<T> action)
+    {
+        if (!eventsDic.ContainsKey(gameEvent))
+        {
+            List<Action<T>> actions = new List<Action<T>>();
+            actions.Add(action);
+            eventsDic.Add(gameEvent, actions);
+        }
+        else
+        {
+            List<Action<T>> actions = eventsDic[gameEvent];
+
+            if (!actions.Contains(action))
+            {
+                actions.Add(action);
+            }
+        }
+    }
+
+    public static void RemoveListener(string gameEvent, Action<T> action)
+    {
+        if (eventsDic.ContainsKey(gameEvent))
+        {
+            List<Action<T>> actions = eventsDic[gameEvent];
+
+            if (actions.Contains(action))
+            {
+                actions.Remove(action);
+            }
+
+            if (actions.Count == 0)
+            {
+                eventsDic.Remove(gameEvent);
+            }
+        }
+    }
+
+    public static void Boardcast(string gameEvent, T value)
+    {
+        if (eventsDic.ContainsKey(gameEvent))
+        {
+            List<Action<T>> actions = eventsDic[gameEvent];
+
+            foreach (Action<T> a in actions)
+            {
+                a.Invoke(value);
+            }
+        }
+    }
 }

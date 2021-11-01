@@ -9,10 +9,23 @@ public class WanderingAI : MonoBehaviour
 
     private bool _isAlive = true;
 
+    [HideInInspector]
+    public readonly float baseSpeed = 3.0f;
+
     [SerializeField]
     private GameObject enemyFireballPrefab;
 
     private GameObject _fireball;
+
+    private void Awake()
+    {
+        Messenger<float>.AddListener(GameEvent.SPEED_CHANGED, OnSpeedChanged);
+    }
+
+    private void OnDestroy()
+    {
+        Messenger<float>.RemoveListener(GameEvent.SPEED_CHANGED, OnSpeedChanged);
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -58,4 +71,10 @@ public class WanderingAI : MonoBehaviour
     {
         this._isAlive = alive;
     }
+
+    private void OnSpeedChanged(float value)
+    {
+        speed = baseSpeed * value;
+    }
+
 }
