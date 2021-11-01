@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class RayShooter : MonoBehaviour
 {
@@ -12,8 +13,8 @@ public class RayShooter : MonoBehaviour
     void Start()
     {
         _camera = this.GetComponent<Camera>();
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        //Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.visible = false;
     }
 
     // Update is called once per frame
@@ -21,7 +22,7 @@ public class RayShooter : MonoBehaviour
     {
         this.shoot_interval -= 0.5f * Time.deltaTime;
 
-        if (Input.GetMouseButton(0) && shoot_interval < 0)
+        if (Input.GetMouseButton(0) && shoot_interval < 0 && !EventSystem.current.IsPointerOverGameObject())
         {
             shoot_interval = 1.0f;
 
